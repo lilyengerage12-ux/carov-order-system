@@ -21,7 +21,7 @@ Deno.serve(async(req)=>{
   if(body.action==="reset_password"){
    const {data:profile}=await admin.from("profiles").select("id").eq("phone",phone).single();
    if(!profile) return json({error:"未找到员工"},404);
-   const {error}=await admin.auth.admin.updateUserById(profile.id,{password:body.password});
+   const {error}=await admin.auth.admin.updateUserById(profile.id,{email,password:body.password,email_confirm:true,user_metadata:{phone}});
    if(error) throw error;
    await admin.from("audit_logs").insert({actor_id:user.id,action:"reset_employee_password",target_type:"profile",target_id:profile.id});
    return json({ok:true});
